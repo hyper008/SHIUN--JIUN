@@ -1,0 +1,2543 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>&#x52f3;&#x9245;&#x6703;&#x8a08;&#x7ba1;&#x7406;&#x7cfb;&#x7d71;</title>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+body {
+    font-family: Arial, "Microsoft JhengHei", sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ef 100%);
+    font-size: 16px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 20px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 20px;
+    background: linear-gradient(90deg, #1a237e 0%, #0d47a1 100%);
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.header h1 {
+    font-size: 2.5em;
+    margin: 0;
+    padding: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    gap: 20px;
+}
+
+.nav button {
+    padding: 12px 24px;
+    border: none;
+    background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+    min-width: 160px;
+}
+
+.nav button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #2c3e50;
+}
+
+input, select, textarea {
+    text-align: center;
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1.1em;
+    transition: border-color 0.3s ease;
+}
+
+input:focus, select:focus {
+    border-color: #1e88e5;
+    outline: none;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    animation: tableLoad 0.6s ease-out;
+    table-layout: fixed; 
+}
+
+th, td {
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 18px 25px;
+    text-align: center; 
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    min-width: 50px;
+}
+
+td {
+    position: relative; 
+}
+
+td:hover::after {
+    content: attr(data-full-text);
+    position: absolute;
+    left: 0;
+    top: 100%;
+    background: white;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    white-space: normal;
+    max-width: 300px;
+    display: none;
+}
+
+td[data-full-text]:hover::after {
+    display: block;
+}
+
+table thead tr th:nth-child(2), 
+table tbody tr td:nth-child(2) {
+    min-width: 200px; /* Increased from 180px */
+    max-width: 300px; /* Increased from 250px */
+}
+
+table thead tr th:nth-child(3), 
+table tbody tr td:nth-child(3) {
+    min-width: 120px;
+    max-width: 150px;
+}
+
+table thead tr th:nth-child(1), 
+table tbody tr td:nth-child(1) {
+  min-width: 200px;
+  max-width: 300px;
+}
+
+td input {
+  width: 95%;
+  min-width: 100px;
+  text-align: center;
+}
+
+th {
+    background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 1.05em;
+    white-space: nowrap;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+tr:hover {
+    background-color: #e3f2fd;
+    transition: background-color 0.3s ease;
+}
+
+td input,
+td select {
+    min-width: 100px;
+    text-align: center; 
+}
+
+td select {
+    min-width: 100px;
+    text-align: center;
+    padding: 5px;
+}
+
+.search-box {
+    margin: 20px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.search-box label {
+    color: #1565c0;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1.1em;
+    background: white url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23999999"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 0 0 5.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>') no-repeat 10px center;
+    background-size: 20px;
+    transition: all 0.3s ease;
+    text-align: center; 
+}
+
+.search-box input:focus {
+    border-color: #1e88e5;
+    box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+    outline: none;
+}
+
+.summary {
+    margin-top: 30px;
+    padding: 25px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ef 100%);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.summary h3 {
+    color: #1565c0;
+    margin-top: 0;
+    font-size: 1.4em;
+}
+
+.summary p {
+    font-size: 1.2em;
+    margin: 10px 0;
+    color: #2c3e50;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+    color: white;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+    color: white;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
+    color: white;
+    margin-left: 5px;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+    color: white;
+    margin-right: 5px;
+}
+
+.adjustment-input {
+    width: 80px;
+    display: inline-block;
+    margin: 0 5px;
+    text-align: center; 
+}
+
+h2 {
+    color: #1565c0;
+    font-size: 2em;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #1565c0;
+}
+
+.chart-section {
+    margin-top: 30px;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    width: 80%; /* Increased size */
+    height: 500px; /* Increased height */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.chart-controls {
+    margin-bottom: 20px;
+}
+
+.chart-controls select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-left: 10px;
+}
+
+.inventory-summary-section {
+    margin: 20px 0;
+}
+
+.inventory-dashboard {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.current-time {
+    color: #666;
+    font-size: 1.1em;
+}
+
+.inventory-summary-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.inventory-summary-card h4 {
+    color: #1565c0;
+    margin-bottom: 15px;
+}
+
+.summary-table table {
+    width: 100%;
+    margin-top: 0;
+}
+
+.status-low {
+    color: #e53935;
+    font-weight: bold;
+}
+
+.status-ok {
+    color: #43a047;
+    font-weight: bold;
+}
+
+.status-warning {
+    color: #ff9800;
+    font-weight: bold;
+}
+
+.status-critical {
+    color: #f44336;
+    font-weight: bold;
+}
+
+.status-pending {
+  color: #ff9800;
+  font-weight: bold;
+}
+
+.status-completed {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.dashboard-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+        margin: 5px;
+        width: 95%;
+    }
+    
+    .header h1 {
+        font-size: 1.8em;
+        padding: 15px 5px;
+    }
+    
+    .nav {
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px;
+    }
+    
+    .nav button {
+        width: 100%;
+        margin: 0;
+        padding: 10px;
+        font-size: 1em;
+        min-width: auto;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    input, select, textarea {
+        padding: 8px;
+        font-size: 0.9em;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        font-size: 0.9em;
+        margin: 10px 0;
+        width: 100%;
+    }
+    
+    th, td {
+        padding: 8px;
+        font-size: 0.9em;
+        min-width: 80px;
+    }
+    
+    td input, td select {
+        min-width: 80px;
+        padding: 4px;
+        font-size: 0.9em;
+    }
+    
+    .btn {
+        padding: 8px 12px;
+        font-size: 0.9em;
+        margin: 2px;
+        min-width: auto;
+    }
+    
+    .chart-section {
+        width: 100%;
+        height: 300px;
+        padding: 10px;
+        margin: 10px 0;
+    }
+    
+    .summary {
+        padding: 15px;
+        margin: 10px 0;
+    }
+    
+    .summary h3 {
+        font-size: 1.2em;
+    }
+    
+    .summary p {
+        font-size: 1em;
+    }
+    
+    .search-box {
+        padding: 10px;
+        margin: 10px 0;
+    }
+    
+    .search-box input {
+        padding: 8px 8px 8px 35px;
+        background-size: 16px;
+    }
+    
+    .dashboard-content {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .inventory-summary-card {
+        padding: 10px;
+        margin: 5px 0;
+    }
+    
+    .save-toast {
+        width: 90%;
+        left: 5%;
+        right: 5%;
+        bottom: 20px;
+        top: auto;
+    }
+
+    .inventory-dashboard {
+        padding: 10px;
+        margin: 10px 0;
+    }
+
+    td[data-full-text]:hover::after {
+        max-width: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+        word-break: break-word;
+        white-space: normal;
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 1.4em;
+    }
+    
+    .nav button {
+        font-size: 0.9em;
+        padding: 8px;
+    }
+    
+    table {
+        font-size: 0.8em;
+    }
+    
+    th, td {
+        padding: 6px;
+        min-width: 60px;
+    }
+    
+    td input, td select {
+        min-width: 60px;
+        padding: 3px;
+    }
+    
+    .btn {
+        padding: 6px 10px;
+        font-size: 0.8em;
+    }
+    
+    .chart-section {
+        height: 250px;
+    }
+
+    .form-group label {
+        font-size: 0.9em;
+    }
+
+    .summary p {
+        font-size: 0.9em;
+    }
+
+    .inventory-summary-card h4 {
+        font-size: 1em;
+    }
+
+    .dashboard-header h3 {
+        font-size: 1.2em;
+    }
+
+    .current-time {
+        font-size: 0.8em;
+    }
+}
+
+/* Add touch-friendly hover effects for mobile */
+@media (hover: none) {
+    .nav button:active {
+        transform: translateY(1px);
+    }
+
+    td[data-full-text]:active::after {
+        display: block;
+    }
+
+    tr:active {
+        background-color: #e3f2fd;
+    }
+
+    .btn:active {
+        transform: translateY(1px);
+    }
+}
+
+@keyframes tableLoad {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+input[list] {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1.1em;
+    transition: border-color 0.3s ease;
+    text-align: center; 
+}
+
+input[list]:focus {
+    border-color: #1e88e5;
+    outline: none;
+}
+
+input[list]::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+.save-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 5%;
+    right: 5%;
+    background: #4CAF50;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.save-toast i {
+    font-size: 1.2em;
+}
+
+.save-toast.fade-out {
+    animation: fadeOut 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.resizable-table th {
+  position: relative;
+  user-select: none;
+}
+
+.resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 5px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  cursor: col-resize;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.resizer:hover,
+.resizing {
+  opacity: 1;
+}
+
+.stock-info {
+  margin-top: 5px;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.stock-warning {
+  color: #e53935;
+  font-weight: bold;
+  margin-left: 10px;
+}
+</style>
+</head>
+<body>
+<div id="app" class="container">
+    <div class="header">
+        <h1>&#x52f3;&#x9245;&#x6703;&#x8a08;&#x7ba1;&#x7406;&#x7cfb;&#x7d71;</h1>
+    </div>
+
+    <div class="nav">
+        <button @click="currentView='transactions'"><i class="fas fa-exchange-alt"></i> &#x8a02;&#x55ae;&#x9032;&#x51fa;&#x8ca8;&#x8a18;&#x9304;</button>
+        <button @click="currentView='vendors'"><i class="fas fa-building"></i> &#x5ee0;&#x5546;&#x7ba1;&#x7406;</button>
+        <button @click="currentView='inventory'"><i class="fas fa-warehouse"></i> &#x5eab;&#x5b58;&#x7ba1;&#x7406;</button>
+        <button @click="currentView='reports'"><i class="fas fa-chart-bar"></i> &#x6708;&#x5831;&#x8868;</button>
+        <button @click="currentView='finance'"><i class="fas fa-file-invoice-dollar"></i> &#x8ca1;&#x52d9;&#x7ba1;&#x7406;</button>
+    </div>
+
+    <!-- 進出貨紀錄 -->
+    <div v-if="currentView === 'transactions'">
+        <h2>&#x8a02;&#x55ae;&#x9032;&#x51fa;&#x8ca8;&#x8a18;&#x9304;</h2>
+        <div class="search-box">
+            <label>&#x67e5;&#x8a62;&#x4ea4;&#x6613;&#x7d00;&#x9304;:</label>
+            <input type="text" v-model="searchQuery" placeholder="&#x67e5;&#x8a62;&#x65e5;&#x671f;&#x3001;&#x5546;&#x54c1;&#x6216;&#x4ea4;&#x6613;&#x985e;&#x578b;">
+        </div>
+        <div v-if="!transactions || transactions.length === 0" class="alert alert-info">
+          目前沒有交易紀錄
+        </div>
+        <div class="form-group">
+            <label>&#x5ee0;&#x5546;&#x516c;&#x53f8;</label>
+            <select v-model="newTransaction.vendor">
+                <option value="">請選擇廠商</option>
+                <option v-for="vendor in vendors" :value="vendor.name">{{vendor.name}} (統編: {{vendor.taxId}})</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>&#x4ea4;&#x6613;&#x985e;&#x578b;</label>
+            <select v-model="newTransaction.type">
+                <option value="in">&#x9032;&#x8ca8;</option>
+                <option value="out">&#x51fa;&#x8ca8;</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>&#x65e5;&#x671f;</label>
+            <input type="date" v-model="newTransaction.date">
+        </div>
+        <div class="form-group">
+            <label>&#x5546;&#x54c1;</label>
+            <select v-model="newTransaction.item">
+                <option value="">請選擇商品</option>
+                <option v-for="item in sampleOptions" :key="item" :value="item">{{item}}</option>
+            </select>
+            <div v-if="newTransaction.item" class="stock-info">
+                目前庫存: {{ currentStockLevels[newTransaction.item] || 0 }}
+                <span v-if="newTransaction.type === 'out' && newTransaction.quantity > (currentStockLevels[newTransaction.item] || 0)" 
+                      class="stock-warning">
+                  庫存不足!
+                </span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>&#x6578;&#x91cf;</label>
+            <input type="number" v-model="newTransaction.quantity">
+        </div>
+        <div class="form-group">
+            <label>&#x55ae;&#x50f9;</label>
+            <input type="number" v-model="newTransaction.price">
+        </div>
+        <div class="form-group">
+            <label>&#x8aaa;&#x660e;</label>
+            <input type="text" v-model="newTransaction.remarks" placeholder="&#x8aaa;&#x660e;">
+        </div>
+        <button class="btn btn-primary" @click="addTransaction">&#x65b0;&#x589e;&#x4ea4;&#x6613;</button>
+
+        <table class="resizable-table">
+            <thead>
+                <tr>
+                    <th>&#x72c0;&#x614b;</th>
+                    <th>&#x5ee0;&#x5546;&#x516c;&#x53f8;</th>
+                    <th>&#x65e5;&#x671f;</th>
+                    <th>&#x985e;&#x578b;</th>
+                    <th>&#x5546;&#x54c1;</th>
+                    <th>&#x8aaa;&#x660e;</th>
+                    <th>&#x6578;&#x91cf;</th>
+                    <th>&#x55ae;&#x50f9;</th>
+                    <th>&#x7e3d;&#x8a08;</th>
+                    <th>&#x52d5;&#x4f5c;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(transaction, index) in filteredTransactions" :key="index">
+                    <template v-if="editingItem === index">
+                        <td>
+                            <select v-model="editForm.completed">
+                                <option value="pending">處理中</option>
+                                <option value="completed">已完成</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select v-model="editForm.vendor">
+                                <option v-for="vendor in vendors" :value="vendor.name">{{vendor.name}}</option>
+                            </select>
+                        </td>
+                        <td><input type="date" v-model="editForm.date"></td>
+                        <td>
+                            <select v-model="editForm.type">
+                                <option value="in">&#x9032;&#x8ca8;</option>
+                                <option value="out">&#x51fa;&#x8ca8;</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select v-model="editForm.item">
+                                <option v-for="item in sampleOptions" :key="item" :value="item">{{item}}</option>
+                            </select>
+                        </td>
+                        <td><input type="text" v-model="editForm.remarks"></td>
+                        <td><input type="number" v-model="editForm.quantity"></td>
+                        <td><input type="number" v-model="editForm.price"></td>
+                        <td>{{ editForm.quantity * editForm.price }}</td>
+                        <td>
+                            <button class="btn btn-success" @click="saveTransactionEdit">&#x5132;&#x5b58;</button>
+                            <button class="btn btn-danger" @click="cancelEdit">&#x53d6;&#x6d88;</button>
+                        </td>
+                    </template>
+                    <template v-else>
+                        <td>{{ transaction.completed === 'completed' ? '已完成' : '處理中' }}</td>
+                        <td :data-full-text="transaction.vendorTooltip">{{ transaction.vendorDisplay }}</td>
+                        <td :data-full-text="transaction.dateDisplay">{{ transaction.dateDisplay }}</td>
+                        <td>{{ transaction.type === 'in' ? '&#x9032;&#x8ca8;' : '&#x51fa;&#x8ca8;' }}</td>
+                        <td>{{ transaction.item }}</td>
+                        <td>{{ transaction.remarks }}</td>
+                        <td>{{ transaction.quantity }}</td>
+                        <td>{{ transaction.price }}</td>
+                        <td>{{ transaction.quantity * transaction.price }}</td>
+                        <td>
+                            <button class="btn btn-primary" @click="editTransaction(index)">&#x7de8;&#x8f2f;</button>
+                            <button class="btn btn-danger" @click="deleteRecordByType('transaction', index)">&#x522a;&#x9664;</button>
+                        </td>
+                    </template>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="summary">
+            <h3>&#x6458;&#x8981;</h3>
+            <p>&#x9032;&#x8ca8;&#x7e3d;&#x8a08;:{{ inTotal }}</p>
+            <p>&#x51fa;&#x8ca8;&#x7e3d;&#x8a08;:{{ outTotal }}</p>
+            <p>&#x76c8;&#x9918;:{{ balance }}</p>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-controls">
+                <label>&#x5716;&#x8868;&#x985e;&#x578b;:</label>
+                <select v-model="selectedChart" @change="updateChart">
+                    <option v-for="type in chartTypes" :value="type.value">{{type.label}}</option>
+                </select>
+            </div>
+            <canvas id="transactionChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- 廠商管理 -->
+    <div v-if="currentView === 'vendors'">
+        <h2>&#x5ee0;&#x5546;&#x7ba1;&#x7406;</h2>
+        <div class="search-box">
+            <label>&#x67e5;&#x8a62;&#x5ee0;&#x5546;&#x8cc7;&#x6599;:</label>
+            <input type="text" v-model="vendorSearchQuery" placeholder="&#x67e5;&#x8a62;&#x5ee0;&#x5546;&#x540d;&#x7a31;&#x3001;&#x7d71;&#x4e00;&#x7de8;&#x865f;&#x3001;&#x806f;&#x7e6b;&#x4eba;&#x6216;&#x96fb;&#x8a71;">
+        </div>
+        <div class="form-group">
+            <label>&#x5ee0;&#x5546;&#x540d;&#x7a31;</label>
+            <input type="text" v-model="newVendor.name">
+        </div>
+        <div class="form-group">
+            <label>&#x7d71;&#x4e00;&#x7de8;&#x865f;</label>
+            <input type="text" v-model="newVendor.taxId">
+        </div>
+        <div class="form-group">
+            <label>&#x806f;&#x7e6b;&#x4eba;</label>
+            <input type="text" v-model="newVendor.contact">
+        </div>
+        <div class="form-group">
+            <label>&#x96fb;&#x8a71;</label>
+            <input type="text" v-model="newVendor.phone">
+        </div>
+        <div class="form-group">
+            <label>&#x50b3;&#x771f;</label>
+            <input type="text" v-model="newVendor.fax">
+        </div>
+        <div class="form-group">
+            <label>&#x516c;&#x53f8;&#x5730;&#x5740;</label>
+            <input type="text" v-model="newVendor.address">
+        </div>
+        <div class="form-group">
+            <label>&#x5099;&#x8a3b;</label>
+            <input type="text" v-model="newVendor.memo">
+        </div>
+        <button class="btn btn-primary" @click="addVendor">&#x65b0;&#x589e;&#x5ee0;&#x5546;</button>
+
+        <table class="vendor-table">
+            <thead>
+                <tr>
+                    <th>&#x5ee0;&#x5546;&#x540d;&#x7a31;</th>
+                    <th>&#x7d71;&#x4e00;&#x7de8;&#x865f;</th>
+                    <th>&#x806f;&#x7e6b;&#x4eba;</th>
+                    <th>&#x96fb;&#x8a71;</th>
+                    <th>&#x50b3;&#x771f;</th>
+                    <th>&#x516c;&#x53f8;&#x5730;&#x5740;</th>
+                    <th>&#x5099;&#x8a3b;</th>
+                    <th>&#x52d5;&#x4f5c;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(vendor, index) in filteredVendors" :key="index">
+                    <template v-if="editingItem === index">
+                        <td><input type="text" v-model="editForm.name"></td>
+                        <td><input type="text" v-model="editForm.taxId"></td>
+                        <td><input type="text" v-model="editForm.contact"></td>
+                        <td><input type="text" v-model="editForm.phone"></td>
+                        <td><input type="text" v-model="editForm.fax"></td>
+                        <td><input type="text" v-model="editForm.address"></td>
+                        <td><input type="text" v-model="editForm.memo"></td>
+                        <td>
+                            <button class="btn btn-success" @click="saveVendorEdit">&#x5132;&#x5b58;</button>
+                            <button class="btn btn-danger" @click="cancelEdit">&#x53d6;&#x6d88;</button>
+                        </td>
+                    </template>
+                    <template v-else>
+                        <td>{{ vendor.name }}</td>
+                        <td>{{ vendor.taxId }}</td>
+                        <td>{{ vendor.contact }}</td>
+                        <td>{{ vendor.phone }}</td>
+                        <td>{{ vendor.fax }}</td>
+                        <td>{{ vendor.address }}</td>
+                        <td>{{ vendor.memo }}</td>
+                        <td>
+                            <button class="btn btn-primary" @click="editVendor(index)">&#x7de8;&#x8f2f;</button>
+                            <button class="btn btn-danger" @click="deleteVendor(index)">&#x522a;&#x9664;</button>
+                        </td>
+                    </template>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 庫存管理 -->
+    <div v-if="currentView === 'inventory'">
+        <h2>&#x5eab;&#x5b58;&#x7ba1;&#x7406;</h2>
+        
+        <div class="nav" style="background: #f8f9fa;">
+            <button @click="inventoryType='screws'">&#x87ba;&#x7d72;&#x5eab;&#x5b58;&#x7ba1;&#x7406;</button>
+            <button @click="inventoryType='samples'">&#x6a23;&#x54c1;&#x5eab;&#x5b58;&#x7ba1;&#x7406;</button>
+        </div>
+
+        <!-- 螺絲庫存管理 -->
+        <div v-if="inventoryType === 'screws'">
+            <h3>&#x87ba;&#x7d72;&#x5eab;&#x5b58;&#x7ba1;&#x7406;</h3>
+            <div class="search-box">
+                <label>&#x67e5;&#x8a62;&#x87ba;&#x7d72;&#x5eab;&#x5b58;:</label>
+                <input type="text" v-model="screwSearchQuery" placeholder="&#x67e5;&#x8a62;&#x540d;&#x7a31;&#x6216;&#x898f;&#x683c;">
+            </div>
+            
+            <div class="form-group">
+                <label>&#x87ba;&#x7d72;&#x540d;&#x7a31;</label>
+                <input type="text" v-model="newScrew.name" list="screwNameSuggestions" placeholder="&#x4f8b;&#x5982;&#xff1a;&#x5168;&#x982d;(4*10)">
+                <datalist id="screwNameSuggestions">
+                    <option value="全牙(4*10.5)">
+                    <option value="全牙(4*12.5)">
+                    <option value="全牙(4*13)">
+                    <option value="半牙(4*12.5)">
+                    <option value="特殊半牙(4*12.5)">
+                    <option value="短螺絲(4*7)">
+                    <option value="螺母">
+                    <option value="華司">
+                    <option value="特小蝴蝶片">
+                    <option value="一般蝴蝶片">
+                    <option value="15P蝴蝶片">
+                    <option value="特大蝴蝶片">
+                    <option value="一般長螺絲">
+                    <option value="剖溝長螺絲">
+                </datalist>
+            </div>
+            <div class="form-group">
+                <label>&#x73fe;&#x5b58;&#x6578;&#x91cf;</label>
+                <input type="number" v-model="newScrew.quantity">
+            </div>
+            <div class="form-group">
+                <label>&#x5b89;&#x516c;&#x5eab;&#x5b58;&#x91cf;</label>
+                <input type="number" v-model="newScrew.safetyStock">
+            </div>
+            <button class="btn btn-primary" @click="addScrew">&#x65b0;&#x589e;&#x87ba;&#x7d72;&#x5eab;&#x5b58;</button>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>&#x540d;&#x7a31;</th>
+                        <th>&#x73fe;&#x5b58;&#x6578;&#x91cf;</th>
+                        <th>&#x5b89;&#x516c;&#x5eab;&#x5b58;&#x91cf;</th>
+                        <th>&#x5eab;&#x5b58;&#x72c0;&#x614b;</th>
+                        <th>&#x52d5;&#x4f5c;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(screw, index) in filteredScrews" :key="index">
+                        <template v-if="editingItem === index">
+                            <td><input type="text" v-model="editForm.name" list="screwNameSuggestions"></td>
+                            <td><input type="number" v-model="editForm.quantity"></td>
+                            <td><input type="number" v-model="editForm.safetyStock"></td>
+                            <td>{{ editForm.quantity < editForm.safetyStock ? '&#x5eab;&#x5b58;&#x4e0d;&#x8db3;' : '&#x5eab;&#x5b58;&#x5145;&#x8db3;' }}</td>
+                            <td>
+                                <button class="btn btn-success" @click="saveScrewEdit">&#x5132;&#x5b58;</button>
+                                <button class="btn btn-danger" @click="cancelEdit">&#x53d6;&#x6d88;</button>
+                            </td>
+                        </template>
+                        <template v-else>
+                            <td>{{ screw.name }}</td>
+                            <td>{{ screw.quantity }}</td>
+                            <td>{{ screw.safetyStock }}</td>
+                            <td :class="screw.statusClass">{{ screw.status }}</td>
+                            <td>
+                                <button class="btn btn-primary" @click="editScrew(index)">&#x7de8;&#x8f2f;</button>
+                                <button class="btn btn-danger" @click="deleteRecordByType('screw', index)">&#x522a;&#x9664;</button>
+                            </td>
+                        </template>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="chart-section">
+                <div class="chart-controls">
+                    <label>&#x5716;&#x8868;&#x985e;&#x578b;:</label>
+                    <select v-model="selectedChart" @change="updateInventoryChart">
+                        <option v-for="type in chartTypes" :value="type.value">{{type.label}}</option>
+                    </select>
+                </div>
+                <canvas id="inventoryChart" width="400" height="200"></canvas>
+            </div>
+
+            <div class="inventory-summary-section">
+                <button class="btn btn-primary" @click="showInventorySummary = !showInventorySummary">
+                    <i class="fas fa-clipboard-list"></i> 
+                    {{ showInventorySummary ? '&#x96b1;&#x85cf;&#x5eab;&#x5b58;&#x6458;&#x8981;' : '&#x986f;&#x793a;&#x5eab;&#x5b58;&#x6458;&#x8981;' }}
+                </button>
+                
+                <div v-if="showInventorySummary" class="inventory-dashboard">
+                    <div class="dashboard-header">
+                        <h3>&#x76ee;&#x524d;&#x5eab;&#x5b58;&#x6458;&#x8981;</h3>
+                        <p class="current-time">&#x66f4;&#x65b0;&#x6642;&#x9593;&#xff1a;{{ currentDateTime }}</p>
+                    </div>
+                    
+                    <div class="dashboard-content">
+                        <div class="inventory-summary-card">
+                            <h4>&#x87ba;&#x7d72;&#x5eab;&#x5b58;&#x6982;&#x89bd;</h4>
+                            <div class="summary-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>&#x5546;&#x54c1;</th>
+                                            <th>&#x6578;&#x91cf;</th>
+                                            <th>&#x72c0;&#x614b;</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="item in currentInventorySummary.screws" :key="item.name">
+                                            <td>{{ item.name }}</td>
+                                            <td>{{ item.quantity }}</td>
+                                            <td :class="item.status === '&#x5eab;&#x5b58;&#x4e0d;&#x8db3;' ? 'status-low' : 'status-ok'">
+                                                {{ item.status }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="inventory-summary-card">
+                            <h4>&#x6a23;&#x54c1;&#x5eab;&#x5b58;&#x6982;&#x89bd;</h4>
+                            <div class="summary-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>&#x6a23;&#x54c1;&#x7de8;&#x865f;</th>
+                                            <th>&#x5546;&#x54c1;</th>
+                                            <th>&#x6578;&#x91cf;</th>
+                                            <th>&#x4f4d;&#x7f6e;</th>
+                                            <th>&#x52d5;&#x4f5c;</th>
+                                            <th>&#x66f4;&#x65b0;&#x6642;&#x9593;</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(sample, index) in currentInventorySummary.samples" :key="sample.code">
+                                            <td>{{ sample.code }}</td>
+                                            <td>{{ sample.name }}</td>
+                                            <td>{{ sample.quantity }}</td>
+                                            <td>{{ sample.location }}</td>
+                                            <td>
+                                                <button class="btn btn-success" @click="adjustInventory(index, 'in')">&#x5165;&#x5eab; +</button>
+                                                <button class="btn btn-warning" @click="adjustInventory(index, 'out')">&#x51fa;&#x5eab; -</button>
+                                                <input type="number" v-model="adjustmentAmount" placeholder="&#x6578;&#x91cf;" class="adjustment-input">
+                                            </td>
+                                            <td>{{sample.lastUpdated}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 樣品庫存管理 -->
+        <div v-if="inventoryType === 'samples'">
+            <h3>&#x6a23;&#x54c1;&#x5eab;&#x5b58;&#x7ba1;&#x7406;</h3>
+            <div class="search-box">
+                <label>&#x67e5;&#x8a62;&#x6a23;&#x54c1;&#x5eab;&#x5b58;:</label>
+                <input type="text" v-model="sampleSearchQuery" placeholder="&#x67e5;&#x8a62;&#x6a23;&#x54c1;&#x540d;&#x7a31;">
+            </div>
+
+            <div class="form-group">
+                <label>&#x6a23;&#x54c1;&#x540d;&#x7a31;</label>
+                <select v-model="newSample.name">
+                    <option value="">請選擇樣品名稱</option>
+                    <option v-for="item in sampleOptions" :key="item" :value="item">{{item}}</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>&#x73fe;&#x5b58;&#x6578;&#x91cf;</label>
+                <input type="number" v-model="newSample.quantity">
+            </div>
+
+            <div class="form-group">
+                <label>&#x5b89;&#x516c;&#x5eab;&#x5b58;&#x91cf;</label>
+                <input type="number" v-model="newSample.safetyStock">
+            </div>
+
+            <button class="btn btn-primary" @click="addSample">&#x65b0;&#x589e;&#x6a23;&#x54c1;&#x5eab;&#x5b58;</button>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>&#x6a23;&#x54c1;&#x540d;&#x7a31;</th>
+                        <th>&#x73fe;&#x5b58;&#x6578;&#x91cf;</th>
+                        <th>&#x5b89;&#x516c;&#x5eab;&#x5b58;&#x91cf;</th>
+                        <th>&#x5eab;&#x5b58;&#x72c0;&#x614b;</th>
+                        <th>&#x52d5;&#x4f5c;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(sample, index) in filteredSamples" :key="index">
+                        <template v-if="editingItem === index">
+                            <td>
+                                <select v-model="editForm.name">
+                                    <option v-for="item in sampleOptions" :key="item" :value="item">{{item}}</option>
+                                </select>
+                            </td>
+                            <td><input type="number" v-model="editForm.quantity"></td>
+                            <td><input type="number" v-model="editForm.safetyStock"></td>
+                            <td>{{ editForm.quantity < editForm.safetyStock ? '庫存不足' : '庫存充足' }}</td>
+                            <td>
+                                <button class="btn btn-success" @click="saveSampleEdit">儲存</button>
+                                <button class="btn btn-danger" @click="cancelEdit">取消</button>
+                            </td>
+                        </template>
+                        <template v-else>
+                            <td>{{ sample.name }}</td>
+                            <td>{{ sample.quantity }}</td>
+                            <td>{{ sample.safetyStock }}</td>
+                            <td :class="sample.statusClass">{{ sample.status }}</td>
+                            <td>
+                                <button class="btn btn-primary" @click="editSample(index)">編輯</button>
+                                <button class="btn btn-danger" @click="deleteRecordByType('sample', index)">刪除</button>
+                            </td>
+                        </template>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="chart-section">
+                <div class="chart-controls">
+                    <label>圖表類型:</label>
+                    <select v-model="sampleChartType" @change="updateSampleInventoryChart">
+                        <option value="bar">長條圖</option>
+                        <option value="line">折線圖</option>
+                        <option value="pie">圓餅圖</option>
+                        <option value="doughnut">環形圖</option>
+                    </select>
+                </div>
+                <canvas id="sampleInventoryChart" width="800" height="400"></canvas>
+            </div>
+            <div class="summary">
+                <h3>&#x6a23;&#x54c1;&#x5eab;&#x5b58;&#x6458;&#x8981;</h3>
+                <p>&#x5eab;&#x5b58;&#x4e0d;&#x8db3;&#x6a23;&#x54c1;: {{ lowStockSamples }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 月報表 -->
+    <div v-if="currentView === 'reports'">
+        <h2>&#x6708;&#x5831;&#x8868;</h2>
+        <div class="search-box">
+            <label>&#x67e5;&#x8a62;&#x5831;&#x8868;:</label>
+            <input type="text" v-model="reportSearchQuery" placeholder="&#x67e5;&#x8a62;&#x6708;&#x4efd;">
+        </div>
+        <div class="form-group">
+            <label>&#x9078;&#x64c7;&#x6708;&#x4efd;</label>
+            <input type="month" v-model="selectedMonth">
+        </div>
+        <div class="summary">
+            <h3>{{ selectedMonth }} &#x6708;&#x5831;&#x8868;</h3>
+            <p>&#x672c;&#x6708;&#x9032;&#x8ca8;&#x7e3d;&#x8a08;:{{ monthlyInTotal }}</p>
+            <p>&#x672c;&#x6708;&#x51fa;&#x8ca8;&#x7e3d;&#x8a08;:{{ monthlyOutTotal }}</p>
+            <p>&#x672c;&#x6708;&#x76c8;&#x9918;:{{ monthlyBalance }}</p>
+        </div>
+    </div>
+
+    <!-- 財務管理 -->
+    <div v-if="currentView === 'finance'">
+        <h2>&#x8ca1;&#x52d9;&#x7ba1;&#x7406;</h2>
+        
+        <div class="nav" style="background: #f8f9fa;">
+            <button @click="financeType='receivable'">&#x61c9;&#x6536;&#x5e33;&#x6b3e;</button>
+            <button @click="financeType='payable'">&#x61c9;&#x4ed8;&#x5e33;&#x6b3e;</button>
+            <button @click="financeType='tax'">&#x71df;&#x696d;&#x7a05;&#x7533;&#x5831;</button>
+        </div>
+
+        <!-- 應收帳款 -->
+        <div v-if="financeType === 'receivable'">
+            <h3>&#x61c9;&#x6536;&#x5e33;&#x6b3e;&#x7ba1;&#x7406;</h3>
+            <div class="search-box">
+                <label>&#x67e5;&#x8a62;&#x61c9;&#x6536;&#x5e33;&#x6b3e;:</label>
+                <input type="text" v-model="receivableSearch" placeholder="&#x67e5;&#x8a62;&#x5ee0;&#x5546;&#x6216;&#x65e5;&#x671f;">
+            </div>
+            
+            <div class="form-group">
+                <label>&#x65e5;&#x671f;</label>
+                <input type="date" v-model="newReceivable.date">
+            </div>
+            <div class="form-group">
+                <label>&#x5ee0;&#x5546;</label>
+                <select v-model="newReceivable.vendor">
+                    <option v-for="vendor in vendors" :value="vendor.name">{{vendor.name}}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>&#x91d1;&#x984d;</label>
+                <input type="number" v-model="newReceivable.amount">
+            </div>
+            <div class="form-group">
+                <label>&#x5230;&#x671f;&#x65e5;</label>
+                <input type="date" v-model="newReceivable.dueDate">
+            </div>
+            <button class="btn btn-primary" @click="addReceivable">&#x65b0;&#x589e;&#x61c9;&#x6536;&#x5e33;&#x6b3e;</button>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>&#x65e5;&#x671f;</th>
+                        <th>&#x5ee0;&#x5546;</th>
+                        <th>&#x91d1;&#x984d;</th>
+                        <th>&#x5230;&#x671f;&#x65e5;</th>
+                        <th>&#x72c0;&#x614b;</th>
+                        <th>&#x52d5;&#x4f5c;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, index) in filteredReceivables" :key="index">
+                        <template v-if="editingItem === index">
+                            <td><input type="date" v-model="editForm.date"></td>
+                            <td>
+                                <select v-model="editForm.vendor">
+                                    <option v-for="vendor in vendors" :value="vendor.name">{{vendor.name}}</option>
+                                </select>
+                            </td>
+                            <td><input type="number" v-model="editForm.amount"></td>
+                            <td><input type="date" v-model="editForm.dueDate"></td>
+                            <td>
+                                <select v-model="editForm.status">
+                                    <option value="pending">未收款</option>
+                                    <option value="paid">已收款</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn btn-success" @click="saveReceivableEdit">儲存</button>
+                                <button class="btn btn-danger" @click="cancelEdit">取消</button>
+                            </td>
+                        </template>
+                        <template v-else>
+                            <td>{{item.date}}</td>
+                            <td>{{item.vendor}}</td>
+                            <td>{{item.amount}}</td>
+                            <td>{{item.dueDate}}</td>
+                            <td>{{item.status === 'pending' ? '&#x672a;&#x6536;&#x6b3e;' : '&#x5df2;&#x6536;&#x6b3e;'}}</td>
+                            <td>
+                                <button class="btn btn-success" v-if="item.status === 'pending'" @click="markAsPaid(index, 'receivable')">&#x6a19;&#x8a18;&#x70ba;&#x5df2;&#x6536;&#x6b3e;</button>
+                                <button class="btn btn-primary" @click="editReceivable(index)">&#x7de8;&#x8f2f;</button>
+                                <button class="btn btn-danger" @click="deleteRecordByType('receivable', index)">&#x522a;&#x9664;</button>
+                            </td>
+                        </template>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="summary">
+                <h3>&#x61c9;&#x6536;&#x5e33;&#x6b3e;&#x6458;&#x8981;</h3>
+                <p>&#x672a;&#x6536;&#x6b3e;&#x7e3d;&#x8a08;:{{ pendingReceivableTotal }}</p>
+                <p>&#x5df2;&#x6536;&#x6b3e;&#x7e3d;&#x8a08;:{{ paidReceivableTotal }}</p>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-controls">
+                    <label>&#x5716;&#x8868;&#x985e;&#x578b;:</label>
+                    <select v-model="selectedChart" @change="updateFinanceChart">
+                        <option v-for="type in chartTypes" :value="type.value">{{type.label}}</option>
+                    </select>
+                </div>
+                <canvas id="financeChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- 應付帳款 -->
+        <div v-if="financeType === 'payable'">
+            <h3>&#x61c9;&#x4ed8;&#x5e33;&#x6b3e;&#x7ba1;&#x7406;</h3>
+            <div class="search-box">
+                <label>&#x67e5;&#x8a62;&#x61c9;&#x4ed8;&#x5e33;&#x6b3e;:</label>
+                <input type="text" v-model="payableSearch" placeholder="&#x67e5;&#x8a62;&#x5ee0;&#x5546;&#x6216;&#x65e5;&#x671f;">
+            </div>
+            
+            <div class="form-group">
+                <label>&#x65e5;&#x671f;</label>
+                <input type="date" v-model="newPayable.date">
+            </div>
+            <div class="form-group">
+                <label>&#x5ee0;&#x5546;</label>
+                <select v-model="newPayable.vendor">
+                    <option v-for="vendor in vendors" :value="vendor.name">{{vendor.name}}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>&#x91d1;&#x984d;</label>
+                <input type="number" v-model="newPayable.amount">
+            </div>
+            <div class="form-group">
+                <label>&#x5230;&#x671f;&#x65e5;</label>
+                <input type="date" v-model="newPayable.dueDate">
+            </div>
+            <button class="btn btn-primary" @click="addPayable">&#x65b0;&#x589e;&#x61c9;&#x4ed8;&#x5e33;&#x6b3e;</button>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>&#x65e5;&#x671f;</th>
+                        <th>&#x5ee0;&#x5546;</th>
+                        <th>&#x91d1;&#x984d;</th>
+                        <th>&#x5230;&#x671f;&#x65e5;</th>
+                        <th>&#x72c0;&#x614b;</th>
+                        <th>&#x52d5;&#x4f5c;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, index) in filteredPayables" :key="index">
+                        <template v-if="editingItem === index">
+                            <td><input type="date" v-model="editForm.date"></td>
+                            <td>
+                                <select v-model="editForm.vendor">
+                                    <option v-for="vendor in vendors" :value="vendor.name">{{vendor.name}}</option>
+                                </select>
+                            </td>
+                            <td><input type="number" v-model="editForm.amount"></td>
+                            <td><input type="date" v-model="editForm.dueDate"></td>
+                            <td>
+                                <select v-model="editForm.status">
+                                    <option value="pending">未付款</option>
+                                    <option value="paid">已付款</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn btn-success" @click="savePayableEdit">儲存</button>
+                                <button class="btn btn-danger" @click="cancelEdit">取消</button>
+                            </td>
+                        </template>
+                        <template v-else>
+                            <td>{{item.date}}</td>
+                            <td>{{item.vendor}}</td>
+                            <td>{{item.amount}}</td>
+                            <td>{{item.dueDate}}</td>
+                            <td>{{item.status === 'pending' ? '&#x672a;&#x4ed8;&#x6b3e;' : '&#x5df2;&#x4ed8;&#x6b3e;'}}</td>
+                            <td>
+                                <button class="btn btn-success" v-if="item.status === 'pending'" @click="markAsPaid(index, 'payable')">&#x6a19;&#x8a18;&#x70ba;&#x5df2;&#x4ed8;&#x6b3e;</button>
+                                <button class="btn btn-primary" @click="editPayable(index)">&#x7de8;&#x8f2f;</button>
+                                <button class="btn btn-danger" @click="deleteRecordByType('payable', index)">&#x522a;&#x9664;</button>
+                            </td>
+                        </template>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 營業稅申報 -->
+        <div v-if="financeType === 'tax'">
+            <h3>&#x71df;&#x696d;&#x7a05;&#x7533;&#x5831;&#x7ba1;&#x7406;</h3>
+            <div class="form-group">
+                <label>&#x7533;&#x5831;&#x671f;&#x9593;</label>
+                <select v-model="taxPeriod">
+                    <option value="1">1-2&#x6708;</option>
+                    <option value="2">3-4&#x6708;</option>
+                    <option value="3">5-6&#x6708;</option>
+                    <option value="4">7-8&#x6708;</option>
+                    <option value="5">9-10&#x6708;</option>
+                    <option value="6">11-12&#x6708;</option>
+                </select>
+            </div>
+
+            <div class="summary">
+                <h3>&#x71df;&#x696d;&#x7a05;&#x7533;&#x5831;</h3>
+                <p>&#x92b7;&#x9805;&#x7a05;&#x984d;:{{ salesTax }}</p>
+                <p>&#x9032;&#x9805;&#x7a05;&#x984d;:{{ purchaseTax }}</p>
+                <p>&#x61c9;&#x7d0d;&#x7a05;&#x984d;:{{ netTax }}</p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>&#x65e5;&#x671f;</th>
+                        <th>&#x91d1;&#x984d;</th>
+                        <th>&#x72c0;&#x614b;</th>
+                        <th>&#x52d5;&#x4f5c;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(record, index) in taxRecords" :key="index">
+                        <template v-if="editingItem === index">
+                            <td><input type="date" v-model="editForm.date"></td>
+                            <td><input type="number" v-model="editForm.amount"></td>
+                            <td>
+                                <select v-model="editForm.status">
+                                    <option value="pending">未付</option>
+                                    <option value="paid">已付</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn btn-success" @click="saveTaxEdit">儲存</button>
+                                <button class="btn btn-danger" @click="cancelEdit">取消</button>
+                            </td>
+                        </template>
+                        <template v-else>
+                            <td>{{ record.date }}</td>
+                            <td>{{ record.amount }}</td>
+                            <td>{{ record.status === 'pending' ? '&#x672a;&#x4ed8;' : '&#x5df2;&#x4ed8;' }}</td>
+                            <td>
+                                <button class="btn btn-primary" @click="editTax(index)">&#x7de8;&#x8f2f;</button>
+                                <button class="btn btn-danger" @click="deleteRecordByType('tax', index)">&#x522a;&#x9664;</button>
+                            </td>
+                        </template>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    currentView: 'transactions',
+    transactions: [],
+    vendors: [],
+    searchQuery: '',
+    vendorSearchQuery: '',
+    reportSearchQuery: '',
+    selectedMonth: '',
+    inventoryType: 'screws',
+    screwSearchQuery: '',
+    sampleSearchQuery: '',
+    screws: [],
+    samples: [],
+    adjustmentAmount: 0,
+    newTransaction: {
+      vendor: '',
+      type: 'in',
+      date: '',
+      item: '',
+      quantity: 0,
+      price: 0,
+      remarks: '',
+      completed: 'pending'
+    },
+    sampleOptions: [
+      '9P6型',
+      '9P7型', 
+      '9P8型',
+      '15P8型',
+      '15P10型', 
+      '25P型',
+      '37P型',
+      '50P型',
+      '9PU型',
+      '15PU型',
+      '25PU型'
+    ],
+    newVendor: {
+      name: '',
+      taxId: '',
+      contact: '',
+      phone: '',
+      fax: '',
+      address: '',
+      memo: ''
+    },
+    newScrew: {
+      name: '',
+      quantity: 0,
+      safetyStock: 0
+    },
+    newSample: {
+      name: '',
+      quantity: 0,
+      safetyStock: 0
+    },
+    accountsReceivable: [],
+    accountsPayable: [],
+    newReceivable: {
+      date: '',
+      vendor: '',
+      amount: 0,
+      dueDate: '',
+      status: 'pending'
+    },
+    newPayable: {
+      date: '',
+      vendor: '',
+      amount: 0,
+      dueDate: '',
+      status: 'pending'
+    },
+    financeType: 'receivable',
+    payableSearch: '',
+    receivableSearch: '',
+    selectedChart: 'bar',
+    chartTypes: [{
+      value: 'bar',
+      label: '長條圖'
+    }, {
+      value: 'line',
+      label: '折線圖'
+    }, {
+      value: 'pie',
+      label: '圓餅圖'
+    }, {
+      value: 'doughnut',
+      label: '環形圖'
+    }],
+    currentChart: null,
+    showInventorySummary: false,
+    currentDateTime: new Date().toLocaleString('zh-TW', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }),
+    editingItem: null,
+    editForm: {},
+    isEditing: false,
+    taxRecords: [],
+    taxPeriod: '1',
+    sampleChartType: 'bar',
+    sampleInventoryChart: null
+  },
+  computed: {
+    filteredTransactions() {
+      return this.transactions
+        .filter(t => {
+          const query = this.searchQuery.toLowerCase();
+          return (t.item && t.item.toLowerCase().includes(query)) ||
+                 (t.date && t.date.includes(this.searchQuery)) ||
+                 (t.type === 'in' && '進貨'.includes(this.searchQuery)) ||
+                 (t.type === 'out' && '出貨'.includes(this.searchQuery)) ||
+                 (t.vendor && t.vendor.toLowerCase().includes(query));
+        })
+        .sort((a, b) => {
+          return new Date(a.date || 0) - new Date(b.date || 0);
+        })
+        .map(t => {
+           const vendorDetails = this.vendors.find(v => v.name === t.vendor);
+           return {
+             ...t,
+             vendorDisplay: t.vendor || '',
+             dateDisplay: t.date || '',
+             vendorTooltip: vendorDetails ?
+               `${vendorDetails.name || ''}\n統編: ${vendorDetails.taxId || ''}\n電話: ${vendorDetails.phone || ''}` :
+               (t.vendor || '')
+           };
+        });
+    },
+    filteredVendors() {
+       return this.vendors.filter(v => {
+         const query = this.vendorSearchQuery.toLowerCase();
+         return (v.name && v.name.toLowerCase().includes(query)) ||
+                (v.taxId && v.taxId.includes(this.vendorSearchQuery)) ||
+                (v.contact && v.contact.toLowerCase().includes(query)) ||
+                (v.phone && v.phone.includes(this.vendorSearchQuery)) ||
+                (v.fax && v.fax.includes(this.vendorSearchQuery)) ||
+                (v.address && v.address.toLowerCase().includes(query)) ||
+                (v.memo && v.memo.toLowerCase().includes(query));
+        });
+    },
+     filteredScrews() {
+      return this.screws.map(s => {
+        let status = s.quantity < s.safetyStock ? '庫存不足' : '庫存充足';
+        let statusClass = s.quantity < s.safetyStock ? 'status-low' : 'status-ok'; 
+        return {
+          ...s,
+          status,
+          statusClass
+        };
+      }).filter(s => s.name && s.name.toLowerCase().includes(this.screwSearchQuery.toLowerCase()));
+    },
+    filteredSamples() {
+      return this.samples
+        .filter(s => s.name && s.name.toLowerCase().includes(this.sampleSearchQuery.toLowerCase()))
+        .map(s => ({
+          ...s,
+          status: s.quantity < s.safetyStock ? '庫存不足' : '庫存充足',
+          statusClass: s.quantity < s.safetyStock ? 'status-low' : 'status-ok'
+        }));
+    },
+    filteredReceivables() {
+      return this.accountsReceivable.filter(r => r.vendor.toLowerCase().includes(this.receivableSearch.toLowerCase()) || r.date.includes(this.receivableSearch));
+    },
+    pendingReceivableTotal() {
+      return this.accountsReceivable.filter(r => r.status === 'pending').reduce((sum, r) => sum + r.amount, 0);
+    },
+    paidReceivableTotal() {
+      return this.accountsReceivable.filter(r => r.status === 'paid').reduce((sum, r) => sum + r.amount, 0);
+    },
+    inTotal() {
+      return this.transactions.filter(t => t.type === 'in').reduce((sum, t) => sum + t.quantity * t.price, 0);
+    },
+    outTotal() {
+      return this.transactions.filter(t => t.type === 'out').reduce((sum, t) => sum + t.quantity * t.price, 0);
+    },
+    balance() {
+      return this.outTotal - this.inTotal;
+    },
+    monthlyInTotal() {
+      if (!this.selectedMonth) return 0;
+      return this.transactions.filter(t => t.type === 'in' && t.date.startsWith(this.selectedMonth)).reduce((sum, t) => sum + t.quantity * t.price, 0);
+    },
+    monthlyOutTotal() {
+      if (!this.selectedMonth) return 0;
+      return this.transactions.filter(t => t.type === 'out' && t.date.startsWith(this.selectedMonth)).reduce((sum, t) => sum + t.quantity * t.price, 0);
+    },
+    monthlyBalance() {
+      return this.monthlyOutTotal - this.monthlyInTotal;
+    },
+    salesTax() {
+      return this.outTotal * 0.05;
+    },
+    purchaseTax() {
+      return this.inTotal * 0.05;
+    },
+    netTax() {
+      return this.salesTax - this.purchaseTax;
+    },
+    lowStockSamples() {
+      return this.samples.filter(s => s.quantity < s.safetyStock).length;
+    },
+    currentInventorySummary() {
+      return {
+        screws: this.screws.map(s => ({
+          name: s.name,
+          quantity: s.quantity,
+          status: s.quantity < s.safetyStock ? '庫存不足' : '庫存充足'
+        })),
+        samples: this.samples.map(s => ({
+          name: s.name,
+          quantity: s.quantity,
+          location: '',
+          lastUpdated: ''
+        }))
+      };
+    },
+    currentStockLevels() {
+      const stockLevels = {};
+      
+      this.samples.forEach(sample => {
+        stockLevels[sample.name] = sample.quantity;
+      });
+
+      this.transactions.forEach(transaction => {
+        if (!stockLevels[transaction.item]) {
+          stockLevels[transaction.item] = 0;
+        }
+        if (transaction.type === 'in') {
+          stockLevels[transaction.item] += parseInt(transaction.quantity);
+        } else {
+          stockLevels[transaction.item] -= parseInt(transaction.quantity);
+        }
+      });
+
+      return stockLevels;
+    }
+  },
+  methods: {
+    autoSave() {
+      localStorage.setItem('transactions', JSON.stringify(this.transactions));
+      localStorage.setItem('vendors', JSON.stringify(this.vendors));
+      localStorage.setItem('screws', JSON.stringify(this.screws));
+      localStorage.setItem('samples', JSON.stringify(this.samples));
+      localStorage.setItem('accountsReceivable', JSON.stringify(this.accountsReceivable));
+      localStorage.setItem('accountsPayable', JSON.stringify(this.accountsPayable));
+      localStorage.setItem('taxRecords', JSON.stringify(this.taxRecords));
+      this.showSaveSuccess();
+    },
+    showSaveSuccess() {
+      const toast = document.createElement('div');
+      toast.className = 'save-toast';
+      toast.innerHTML = '<i class="fas fa-check-circle"></i> 存檔成功';
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.classList.add('fade-out');
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 300);
+      }, 3000);
+    },
+    addTransaction() {
+      if (!this.newTransaction.item || !this.newTransaction.quantity) {
+        alert('請填寫商品和數量！');
+        return;
+      }
+
+      if (this.newTransaction.type === 'out' && 
+          this.newTransaction.quantity > (this.currentStockLevels[this.newTransaction.item] || 0)) {
+        alert('庫存不足，無法出貨此數量！');
+        return;
+      }
+
+      const selectedVendor = this.vendors.find(v => v.name === this.newTransaction.vendor) || {};
+      
+      this.transactions.push({
+        ...this.newTransaction,
+        vendorDetails: selectedVendor ? {
+          name: selectedVendor.name || '',
+          taxId: selectedVendor.taxId || '',
+          phone: selectedVendor.phone || ''
+        } : {}
+      });
+
+      const sample = this.samples.find(s => s.name === this.newTransaction.item);
+      if (sample) {
+        if (this.newTransaction.type === 'in') {
+          sample.quantity += parseInt(this.newTransaction.quantity) || 0;
+        } else {
+          sample.quantity -= parseInt(this.newTransaction.quantity) || 0;
+        }
+        sample.lastUpdated = new Date().toLocaleString('zh-TW', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+      }
+
+      this.newTransaction = {
+        vendor: '',
+        type: 'in',
+        date: '',
+        item: '',
+        quantity: 0,
+        price: 0,
+        remarks: '',
+        completed: 'pending'
+      };
+      this.autoSave();
+    },
+    deleteRecordByType(type, index) {
+      const confirmMessages = {
+        transaction: '確認要刪除這筆交易紀錄嗎？',
+        vendor: '確認要刪除這個廠商資料嗎？',
+        screw: '確認要刪除這筆螺絲庫存紀錄嗎？',
+        sample: '確認要刪除這筆樣品庫存紀錄嗎？', 
+        receivable: '確認要刪除這筆應收帳款嗎？',
+        payable: '確認要刪除這筆應付帳款嗎？', 
+        tax: '確認要刪除這筆稅務紀錄嗎？'
+      };
+
+      if (confirm(confirmMessages[type])) {
+        switch(type) {
+          case 'transaction':
+            const transaction = this.transactions[index];
+            const sample = this.samples.find(s => s.name === transaction.item);
+            if (sample) {
+              if (transaction.type === 'in') {
+                sample.quantity -= parseInt(transaction.quantity);
+              } else {
+                sample.quantity += parseInt(transaction.quantity);
+              }
+              sample.lastUpdated = new Date().toLocaleString('zh-TW', {
+                year: 'numeric',
+                month: '2-digit', 
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+              });
+            }
+            this.transactions.splice(index, 1);
+            break;
+          case 'vendor':
+            this.vendors.splice(index, 1);
+            break; 
+          case 'screw':
+            this.screws.splice(index, 1);
+            break;
+          case 'sample': 
+            this.samples.splice(index, 1);
+            this.updateSampleInventoryChart(); 
+            break;
+          case 'receivable':
+            this.accountsReceivable.splice(index, 1);
+            break;
+          case 'payable':
+            this.accountsPayable.splice(index, 1);
+            break;
+          case 'tax':
+            this.taxRecords.splice(index, 1);
+            break;
+        }
+        this.autoSave();
+      }
+    },
+    addVendor() {
+      this.vendors.push({
+        ...this.newVendor
+      });
+      this.newVendor = {
+        name: '',
+        taxId: '',
+        contact: '',
+        phone: '',
+        fax: '',
+        address: '',
+        memo: ''
+      };
+      this.autoSave();
+    },
+    editVendor(index) {
+      this.editingItem = index;
+      this.editForm = {
+        ...this.vendors[index],
+        name: this.vendors[index].name,
+        taxId: this.vendors[index].taxId,
+        contact: this.vendors[index].contact,
+        phone: this.vendors[index].phone,
+        fax: this.vendors[index].fax,
+        address: this.vendors[index].address,
+        memo: this.vendors[index].memo
+      };
+    },
+    saveVendorEdit() {
+      if (this.editingItem !== null) {
+        const updatedVendor = {
+          ...this.editForm,
+          name: this.editForm.name,
+          taxId: this.editForm.taxId,
+          contact: this.editForm.contact, 
+          phone: this.editForm.phone,
+          fax: this.editForm.fax,
+          address: this.editForm.address,
+          memo: this.editForm.memo 
+        };
+        this.$set(this.vendors, this.editingItem, updatedVendor);
+        this.editingItem = null;
+        this.editForm = {};
+        this.autoSave();
+      }
+    },
+    deleteVendor(index) {
+      if (confirm('確認要刪除這個廠商資料嗎？')) {
+        this.vendors.splice(index, 1);
+        this.autoSave();
+      }
+    },
+    addScrew() {
+      const transactions = this.transactions.filter(t => t.item === this.newScrew.name);
+      const inflow = transactions.filter(t => t.type === 'in').reduce((sum, t) => sum + t.quantity, 0);
+      const outflow = transactions.filter(t => t.type === 'out').reduce((sum, t) => sum + t.quantity, 0);
+      const currentStock = this.newScrew.quantity + inflow - outflow;
+      this.screws.push({
+        ...this.newScrew,
+        currentStock
+      });
+      this.newScrew = {
+        name: '',
+        quantity: 0,
+        safetyStock: 0
+      };
+      this.autoSave();
+      this.$nextTick(() => this.updateInventoryChart()); 
+    },
+
+    saveScrewEdit() {
+      if (this.editingItem !== null && this.screws[this.editingItem]) { 
+        const updatedScrew = {
+          ...this.editForm
+        };
+        this.$set(this.screws, this.editingItem, updatedScrew);
+        this.editingItem = null;
+        this.editForm = {};
+        this.isEditing = false;
+        this.autoSave();
+        this.$nextTick(() => this.updateInventoryChart()); 
+      } else {
+        console.error("Error saving screw edit: Item index invalid or item does not exist.");
+        this.cancelEdit(); 
+      }
+    },
+
+    adjustInventory(index, type) {
+      const amount = parseInt(this.adjustmentAmount);
+      if (!amount || amount <= 0) {
+        alert('請輸入有效的數量');
+        return;
+      }
+      const sample = this.samples[index];
+      if (type === 'out' && sample.quantity < amount) {
+        alert('庫存不足');
+        return;
+      }
+      if (type === 'in') {
+        sample.quantity += amount;
+      } else {
+        sample.quantity -= amount;
+      }
+      sample.lastUpdated = new Date().toLocaleString('zh-TW', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+      this.updateSampleInventoryChart(); 
+      this.adjustmentAmount = 0;
+      this.autoSave();
+    },
+    addSample() {
+      if (!this.newSample.name) {
+        alert('請選擇樣品名稱');
+        return;
+      }
+      
+      this.samples.push({
+        ...this.newSample,
+        status: this.newSample.quantity < this.newSample.safetyStock ? '庫存不足' : '庫存充足',
+        statusClass: this.newSample.quantity < this.newSample.safetyStock ? 'status-low' : 'status-ok'
+      });
+      this.updateSampleInventoryChart(); 
+      this.newSample = {
+        name: '',
+        quantity: 0,
+        safetyStock: 0
+      };
+      this.autoSave();
+    },
+    editSample(index) {
+      this.editingItem = index;
+      this.editForm = {
+        ...this.samples[index]
+      };
+      this.isEditing = true;
+    },
+    saveSampleEdit() {
+      if (this.editingItem !== null) {
+        const updatedSample = {
+          ...this.editForm,
+          status: this.editForm.quantity < this.editForm.safetyStock ? '庫存不足' : '庫存充足',
+          statusClass: this.editForm.quantity < this.editForm.safetyStock ? 'status-low' : 'status-ok'
+        };
+        this.$set(this.samples, this.editingItem, updatedSample);
+        this.updateSampleInventoryChart(); 
+        this.editingItem = null;
+        this.editForm = {};
+        this.isEditing = false;
+        this.autoSave();
+      }
+    },
+    addReceivable() {
+      this.accountsReceivable.push({
+        ...this.newReceivable
+      });
+      this.newReceivable = {
+        date: '',
+        vendor: '',
+        amount: 0,
+        dueDate: '',
+        status: 'pending'
+      };
+      this.autoSave();
+    },
+    addPayable() {
+      this.accountsPayable.push({
+        ...this.newPayable
+      });
+      this.newPayable = {
+        date: '',
+        vendor: '',
+        amount: 0,
+        dueDate: '',
+        status: 'pending'
+      };
+      this.autoSave();
+    },
+    markAsPaid(index, type) {
+      if (type === 'receivable') {
+        this.accountsReceivable[index].status = 'paid';
+      } else if (type === 'payable') {
+        this.accountsPayable[index].status = 'paid';
+      }
+      this.autoSave();
+    },
+    editTransaction(index) {
+      this.editingItem = index;
+      this.editForm = {
+        ...this.transactions[index]
+      };
+    },
+    saveTransactionEdit() {
+      if (this.editingItem !== null) {
+        const updatedTransaction = {
+          ...this.editForm
+        };
+        this.$set(this.transactions, this.editingItem, updatedTransaction);
+        this.editingItem = null;
+        this.editForm = {};
+        this.autoSave();
+      }
+    },
+    editReceivable(index) {
+      this.editingItem = index;
+      this.editForm = {
+        ...this.accountsReceivable[index]
+      };
+    },
+    saveReceivableEdit() {
+      if (this.editingItem !== null) {
+        const updatedReceivable = {
+          ...this.editForm
+        };
+        this.$set(this.accountsReceivable, this.editingItem, updatedReceivable);
+        this.editingItem = null;
+        this.editForm = {};
+        this.autoSave();
+      }
+    },
+    editPayable(index) {
+      this.editingItem = index;
+      this.editForm = {
+        ...this.accountsPayable[index]
+      };
+    },
+    savePayableEdit() {
+      if (this.editingItem !== null) {
+        const updatedPayable = {
+          ...this.editForm  
+        };
+        this.$set(this.accountsPayable, this.editingItem, updatedPayable);
+        this.editingItem = null;
+        this.editForm = {};
+        this.autoSave();
+      }
+    },
+    editTax(index) {
+      this.editingItem = index;
+      this.editForm = {
+        ...this.taxRecords[index]
+      };
+    },
+    saveTaxEdit() {
+      if (this.editingItem !== null) {
+        const updatedTax = {
+          ...this.editForm
+        };
+        this.$set(this.taxRecords, this.editingItem, updatedTax);
+        this.editingItem = null; 
+        this.editForm = {};
+        this.autoSave();
+      }
+    },
+    updateChart() {
+      if (this.currentView === 'transactions') this.updateTransactionChart();
+      else if (this.currentView === 'inventory' && this.inventoryType === 'screws') this.updateInventoryChart();
+      else if (this.currentView === 'inventory' && this.inventoryType === 'samples') this.updateSampleInventoryChart();
+      else if (this.currentView === 'finance') this.updateFinanceChart();
+    },
+
+    updateTransactionChart() {
+        const ctx = document.getElementById('transactionChart');
+        if (!ctx) return; 
+
+        if (this.currentChart && typeof this.currentChart.destroy === 'function') {
+            this.currentChart.destroy();
+        }
+
+        const labels = [...new Set(this.filteredTransactions.map(t => t.item))]; 
+        const inData = labels.map(item =>
+            this.filteredTransactions
+                .filter(t => t.type === 'in' && t.item === item)
+                .reduce((sum, t) => sum + (t.quantity * t.price), 0)
+        );
+        const outData = labels.map(item =>
+            this.filteredTransactions
+                .filter(t => t.type === 'out' && t.item === item)
+                .reduce((sum, t) => sum + (t.quantity * t.price), 0)
+        );
+
+        this.currentChart = new Chart(ctx.getContext('2d'), {
+            type: this.selectedChart, 
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: '進貨總額',
+                        data: inData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '出貨總額',
+                        data: outData,
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                 scales: (this.selectedChart === 'bar' || this.selectedChart === 'line') ? { y: { beginAtZero: true } } : {} 
+            }
+        });
+    },
+
+    updateFinanceChart() {
+        const ctx = document.getElementById('financeChart');
+         if (!ctx) {
+             console.error("Error: finance chart canvas not found!");
+             return;
+         }
+
+         if (this.financeChart && typeof this.financeChart.destroy === 'function') {
+            this.financeChart.destroy();
+         }
+
+         let labels = [];
+         let datasets = [];
+
+         if(this.financeType === 'receivable') {
+            labels = [...new Set(this.filteredReceivables.map(r => r.vendor))];
+            datasets = [
+                {
+                    label: '未收款金額',
+                    data: labels.map(vendor => this.filteredReceivables.filter(r => r.vendor === vendor && r.status === 'pending').reduce((sum, r) => sum + r.amount, 0)),
+                    backgroundColor: 'rgba(255, 159, 64, 0.5)',
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                },
+                 {
+                    label: '已收款金額',
+                    data: labels.map(vendor => this.filteredReceivables.filter(r => r.vendor === vendor && r.status === 'paid').reduce((sum, r) => sum + r.amount, 0)),
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }
+            ];
+         } else if (this.financeType === 'payable') {
+             const filteredPayables = this.accountsPayable.filter(p => p.vendor.toLowerCase().includes(this.payableSearch.toLowerCase()) || p.date.includes(this.payableSearch));
+             labels = [...new Set(filteredPayables.map(p => p.vendor))];
+             datasets = [
+                 {
+                    label: '未付款金額',
+                    data: labels.map(vendor => filteredPayables.filter(p => p.vendor === vendor && p.status === 'pending').reduce((sum, p) => sum + p.amount, 0)),
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                 },
+                 {
+                    label: '已付款金額',
+                    data: labels.map(vendor => filteredPayables.filter(p => p.vendor === vendor && p.status === 'paid').reduce((sum, p) => sum + p.amount, 0)),
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                 }
+             ];
+         }
+
+        this.financeChart = new Chart(ctx.getContext('2d'), {
+            type: this.selectedChart, 
+            data: { labels, datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: (this.selectedChart === 'bar' || this.selectedChart === 'line') ? { y: { beginAtZero: true } } : {}
+            }
+        });
+    },
+
+
+    updateInventoryChart() {
+       const ctx = document.getElementById('inventoryChart');
+       if (!ctx) {
+           console.error("Error: inventory chart canvas not found!");
+           return; 
+       }
+
+       if (this.inventoryChart && typeof this.inventoryChart.destroy === 'function') {
+           this.inventoryChart.destroy();
+       }
+
+       const labels = this.filteredScrews.map(s => s.name || '未命名'); 
+       const quantities = this.filteredScrews.map(s => s.quantity || 0); 
+       const safetyLevels = this.filteredScrews.map(s => s.safetyStock || 0); 
+
+
+       const config = {
+         type: this.selectedChart, 
+         data: {
+           labels: labels,
+           datasets: [{
+             label: '現存數量',
+             data: quantities,
+             backgroundColor: 'rgba(54, 162, 235, 0.5)', 
+             borderColor: 'rgba(54, 162, 235, 1)',
+             borderWidth: 1
+           }, {
+             label: '安全庫存量',
+             data: safetyLevels,
+             backgroundColor: 'rgba(255, 99, 132, 0.5)', 
+             borderColor: 'rgba(255, 99, 132, 1)',
+             borderWidth: 1
+           }]
+         },
+         options: {
+           responsive: true,
+           maintainAspectRatio: false, 
+           plugins: {
+             legend: {
+               position: 'top',
+             },
+             title: { 
+                display: true,
+                text: '螺絲庫存量圖表'
+             }
+           },
+           scales: (this.selectedChart === 'bar' || this.selectedChart === 'line') ? {
+             y: {
+               beginAtZero: true,
+               title: { 
+                   display: true,
+                   text: '數量'
+               }
+             },
+             x: {
+                title: { 
+                    display: true,
+                    text: '螺絲名稱'
+                }
+             }
+           } : {} 
+         }
+       };
+
+       if (this.selectedChart === 'pie' || this.selectedChart === 'doughnut') {
+         config.data.datasets = [{
+           label: '現存數量',
+           data: quantities,
+           backgroundColor: [ 
+             'rgba(54, 162, 235, 0.5)',
+             'rgba(255, 206, 86, 0.5)',
+             'rgba(75, 192, 192, 0.5)',
+             'rgba(153, 102, 255, 0.5)',
+             'rgba(255, 159, 64, 0.5)',
+             'rgba(255, 99, 132, 0.5)',
+             'rgba(100, 100, 100, 0.5)'
+           ],
+            borderColor: [
+               'rgba(54, 162, 235, 1)',
+               'rgba(255, 206, 86, 1)',
+               'rgba(75, 192, 192, 1)',
+               'rgba(153, 102, 255, 1)',
+               'rgba(255, 159, 64, 1)',
+               'rgba(255, 99, 132, 1)',
+               'rgba(100, 100, 100, 1)'
+            ],
+            borderWidth: 1
+         }];
+          delete config.options.scales; 
+       }
+
+       try {
+           this.inventoryChart = new Chart(ctx.getContext('2d'), config);
+       } catch (error) {
+           console.error("Error creating inventory chart:", error);
+       }
+     },
+
+
+    updateSampleInventoryChart() {
+       const ctx = document.getElementById('sampleInventoryChart');
+       if (!ctx) {
+           console.error("Error: sample inventory chart canvas not found!");
+           return;
+       }
+
+       if (this.sampleInventoryChart && typeof this.sampleInventoryChart.destroy === 'function') {
+         this.sampleInventoryChart.destroy();
+       }
+
+        if (!this.filteredSamples || this.filteredSamples.length === 0) {
+           console.log("No sample data to display in chart.");
+           const context = ctx.getContext('2d');
+           context.clearRect(0, 0, ctx.width, ctx.height);
+           context.textAlign = 'center';
+           context.fillText('沒有樣品庫存資料可顯示', ctx.width / 2, ctx.height / 2);
+           this.sampleInventoryChart = null;
+           return;
+       }
+
+       const labels = this.filteredSamples.map(s => s.name || '未命名');
+       const quantities = this.filteredSamples.map(s => s.quantity || 0);
+       const safetyLevels = this.filteredSamples.map(s => s.safetyStock || 0);
+
+       const config = {
+         type: this.sampleChartType, 
+         data: {
+           labels: labels,
+           datasets: [{
+             label: '現存數量',
+             data: quantities,
+             backgroundColor: 'rgba(75, 192, 192, 0.5)', 
+             borderColor: 'rgba(75, 192, 192, 1)',
+             borderWidth: 1
+           }, {
+             label: '安全庫存量',
+             data: safetyLevels,
+             backgroundColor: 'rgba(255, 159, 64, 0.5)', 
+             borderColor: 'rgba(255, 159, 64, 1)',
+             borderWidth: 1
+           }]
+         },
+         options: {
+           responsive: true,
+           maintainAspectRatio: false,
+           plugins: {
+             legend: { position: 'top' },
+              title: { display: true, text: '樣品庫存量圖表' }
+           },
+           scales: (this.sampleChartType === 'bar' || this.sampleChartType === 'line') ? {
+                y: { beginAtZero: true, title: { display: true, text: '數量'} },
+                x: { title: { display: true, text: '樣品名稱'} }
+           } : {}
+         }
+       };
+
+       if (this.sampleChartType === 'pie' || this.sampleChartType === 'doughnut') {
+         config.data.datasets = [{
+           label: '現存數量',
+           data: quantities,
+           backgroundColor: [
+             'rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)',
+             'rgba(75, 192, 192, 0.5)', 'rgba(153, 102, 255, 0.5)', 'rgba(255, 159, 64, 0.5)',
+           ],
+           borderColor: [
+              'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)',
+           ],
+           borderWidth: 1
+         }];
+          delete config.options.scales; 
+       }
+
+       try {
+           this.sampleInventoryChart = new Chart(ctx.getContext('2d'), config);
+       } catch (error) {
+           console.error("Error creating sample inventory chart:", error);
+       }
+     },
+
+    cancelEdit() {
+      this.editingItem = null;
+      this.editForm = {};
+      this.isEditing = false; 
+    }
+  },
+  watch: {
+     currentView(newView) {
+      this.$nextTick(() => {
+        if (newView === 'transactions') {
+          this.updateTransactionChart();
+        } else if (newView === 'inventory' && this.inventoryType === 'screws') {
+           this.updateInventoryChart();
+        } else if (newView === 'inventory' && this.inventoryType === 'samples') {
+          this.updateSampleInventoryChart();
+        } else if (newView === 'finance') {
+          this.updateFinanceChart();
+        }
+      });
+    },
+    inventoryType(newType) {
+      this.$nextTick(() => {
+        if (this.currentView === 'inventory') {
+          if (newType === 'screws') {
+            this.updateInventoryChart();
+          } else if (newType === 'samples') {
+            this.updateSampleInventoryChart();
+          }
+        }
+      });
+    },
+    filteredTransactions() {
+       if (this.currentView === 'transactions') this.updateTransactionChart();
+    },
+    filteredScrews() {
+        if (this.currentView === 'inventory' && this.inventoryType === 'screws') this.updateInventoryChart();
+    },
+    filteredSamples() {
+        if (this.currentView === 'inventory' && this.inventoryType === 'samples') this.updateSampleInventoryChart();
+    },
+    filteredReceivables() {
+        if (this.currentView === 'finance' && this.financeType === 'receivable') this.updateFinanceChart();
+    },
+    filteredPayables() {
+        if (this.currentView === 'finance' && this.financeType === 'payable') this.updateFinanceChart();
+    }
+  },
+  mounted() {
+    try {
+      this.vendors = JSON.parse(localStorage.getItem('vendors')) || [];
+
+      this.transactions = (JSON.parse(localStorage.getItem('transactions')) || []).map(t => {
+        const vendorDetails = this.vendors.find(v => v.name === t.vendor); 
+        return {
+          ...t,
+          vendor: t.vendor || '',
+          date: t.date || '',
+          item: t.item || '',
+          quantity: parseInt(t.quantity) || 0, 
+          price: parseFloat(t.price) || 0,    
+          remarks: t.remarks || '',
+          completed: t.completed || 'pending',
+          vendorDetails: vendorDetails ? { 
+            name: vendorDetails.name || '',
+            taxId: vendorDetails.taxId || '',
+            phone: vendorDetails.phone || ''
+          } : {}
+        };
+      });
+
+      this.screws = (JSON.parse(localStorage.getItem('screws')) || []).map(s => ({
+          ...s,
+          name: s.name || '',
+          quantity: parseInt(s.quantity) || 0,
+          safetyStock: parseInt(s.safetyStock) || 0
+      }));
+      this.samples = (JSON.parse(localStorage.getItem('samples')) || []).map(s => ({
+          ...s,
+          name: s.name || '',
+          quantity: parseInt(s.quantity) || 0,
+          safetyStock: parseInt(s.safetyStock) || 0,
+          lastUpdated: s.lastUpdated || '' 
+      }));
+      this.accountsReceivable = (JSON.parse(localStorage.getItem('accountsReceivable')) || []).map(r => ({
+          ...r,
+          amount: parseFloat(r.amount) || 0,
+          status: r.status || 'pending'
+      }));
+      this.accountsPayable = (JSON.parse(localStorage.getItem('accountsPayable')) || []).map(p => ({
+          ...p,
+          amount: parseFloat(p.amount) || 0,
+          status: p.status || 'pending'
+      }));
+      this.taxRecords = JSON.parse(localStorage.getItem('taxRecords')) || [];
+
+      this.$nextTick(() => {
+        if (this.currentView === 'transactions') {
+            this.updateTransactionChart();
+        } else if (this.currentView === 'inventory' && this.inventoryType === 'screws') {
+            this.updateInventoryChart();
+        } else if (this.currentView === 'inventory' && this.inventoryType === 'samples') {
+            this.updateSampleInventoryChart();
+        } else if (this.currentView === 'finance') {
+            this.updateFinanceChart();
+        }
+        setInterval(() => {
+            this.currentDateTime = new Date().toLocaleString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
+        }, 60000); 
+      });
+
+    } catch (err) {
+      console.error('Error loading data:', err);
+      this.transactions = [];
+      this.vendors = [];
+      this.screws = [];
+      this.samples = [];
+      this.accountsReceivable = [];
+      this.accountsPayable = [];
+      this.taxRecords = [];
+    }
+  }
+});
+</script>
+</body>
+</html>
